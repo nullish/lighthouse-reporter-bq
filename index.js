@@ -5,10 +5,15 @@ dotenv.config();
 // dependencies
 const lighthouse = require('lighthouse');
 const chrome_launcher = require('chrome-launcher');
-const db = require('./database');
+const bigQueryInsert = require("./bigQueryInsert"); // module to insert rows to BigQuery
+
+// const db = require('./database');
 const fs = require('fs');
 const path = require('path');
 const neat_csv = require('neat-csv');
+
+// globals
+const datasetId = 'lighthouse'; // Dataset for BigQuery to use.
 
 // Is this a recurring report or no?
 let should_repeat = false;
@@ -398,8 +403,8 @@ async function parseReportAndStore (url, template, report) {
   ];
 
   // Execute the queries
-  await db.query(raw_reports_query_text, raw_reports_query_params);
-  await db.query(gds_audit_query_text, gds_audit_query_params);
+  // await db.query(raw_reports_query_text, raw_reports_query_params);
+  // await db.query(gds_audit_query_text, gds_audit_query_params);
 
   // Insert all resources from the resource table into the resource chart table
   for (let i = 0; i < network_resources.length; i++) {
@@ -420,7 +425,7 @@ async function parseReportAndStore (url, template, report) {
       resource['startTime'],
       resource['endTime']
     ];
-    await db.query(resource_chart_query_text, resource_chart_query_params);
+    // await db.query(resource_chart_query_text, resource_chart_query_params);
   }
 
   // Insert each savings opportunity into the correct table
@@ -434,7 +439,22 @@ async function parseReportAndStore (url, template, report) {
       opportunity['audit_text'],
       opportunity['estimated_savings']
     ];
-    await db.query(savings_opportunities_query_text, savings_opportunities_query_params);
+    /*
+    console.log(`Rows: ${savings_opportunities_query_params.length}
+      ${savings_opportunities_query_params}
+      `);
+*/
+    let map = new Map;
+    map.set('audit_url', savings_opportunities_query_params[0]);
+    map.set('template', savings_opportunities_query_params[1]);
+    map.set('fetch_time', savings_opportunities_query_params[2]);
+    map.set('audit_text', savings_opportunities_query_params[3]);
+    map.set('estimated_savings', savings_opportunities_query_params[4]);
+    let rows = Object.fromEntries(map.entries());
+    console.log(rows);
+    bigQueryInsert(datasetId, 'tbTmpLH', rows); 
+
+    // await db.query(savings_opportunities_query_text, savings_opportunities_query_params);
   }
 
   // Insert each budget row (if any)
@@ -453,7 +473,7 @@ async function parseReportAndStore (url, template, report) {
       item.item_size_over_budget
     ];
 
-    await db.query(performance_budget_query_text, performance_budget_query_params);
+    // await db.query(performance_budget_query_text, performance_budget_query_params);
   }
 
   // Insert each budget row (if any)
@@ -470,7 +490,7 @@ async function parseReportAndStore (url, template, report) {
       item.item_over_budget,
     ];
 
-    await db.query(timing_budget_query_text, timing_budget_query_params);
+    // await db.query(timing_budget_query_text, timing_budget_query_params);
   }
 
   // Insert each diagnostic audit into the correct table
@@ -489,7 +509,7 @@ async function parseReportAndStore (url, template, report) {
         item['value']
       ];
 
-      await db.query(diagnostics_query_text, diagnostics_query_params);
+      // await db.query(diagnostics_query_text, diagnostics_query_params);
     }
   }
 }
@@ -522,14 +542,14 @@ async function processFile (file_path, budgets) {
         const url = record['URL'];
         const template = record['Template'];
 
-        await db.query(`DELETE FROM urls WHERE url = $1`, [url]);
-        await db.query(`INSERT INTO urls(url, template, interval, lifetime) VALUES($1, $2, $3, $4)`, [url, template, auto_report_interval, auto_report_lifetime]);
+        // await db.query(`DELETE FROM urls WHERE url = $1`, [url]);
+        // await db.query(`INSERT INTO urls(url, template, interval, lifetime) VALUES($1, $2, $3, $4)`, [url, template, auto_report_interval, auto_report_lifetime]);
       }
     }
 
     // All done!
     console.log('Finished reporting!');
-    db.disconnect();
+    // db.disconnect();
   }catch (err) {
     console.log('$$$Something went wrong trying to read that file.');
     console.error(err);
@@ -541,8 +561,8 @@ async function doAutomaticReporting () {
 
   // Read all URLs that need updating from the database
   // If the latest date is longer ago than the interval in days, we need to update
-  const db_rows_that_need_updating = await db.query(`SELECT * FROM urls WHERE latest_date < now() - (interval::varchar(255) || 'days')::interval`);
-  const urls_that_need_updating = [];
+  // const db_rows_that_need_updating = await db.query(`SELECT * FROM urls WHERE latest_date < now() - (interval::varchar(255) || 'days')::interval`);
+  // const urls_that_need_updating = [];
 
   db_rows_that_need_updating['rows'].forEach(async row => {
     urls_that_need_updating.push({
@@ -551,23 +571,23 @@ async function doAutomaticReporting () {
     });
 
     // Update the latest date for this report
-    await db.query(`UPDATE urls SET latest_date = CURRENT_DATE WHERE id = $1`, [ row['id'] ]);
+    // await db.query(`UPDATE urls SET latest_date = CURRENT_DATE WHERE id = $1`, [ row['id'] ]);
   });
 
   await doReporting(urls_that_need_updating);
 
   // Now delete all the URLs that need deleting
   console.log('Cleaning up old URLs from the DB...');
-  await db.query(`DELETE FROM urls WHERE start_date < now() - (lifetime::varchar(255) || 'days')::interval`);
+  // await db.query(`DELETE FROM urls WHERE start_date < now() - (lifetime::varchar(255) || 'days')::interval`);
 
   console.log('Done automatically reporting!');
 
-  db.disconnect();
+  //db.disconnect();
 }
 
 // Let's get started
 // Connect to the database
-db.connect(() => {
+//db.connect(() => {
   // Check for file input
   const input_files = fs.readdirSync(path.join(__dirname, 'input'));
 
@@ -596,4 +616,4 @@ db.connect(() => {
   // Run the reports
   // If this is an AUTOMATIC run, we are done
   // Otherwise, save the list of URLs in the database (if not exists)
-});
+//});
