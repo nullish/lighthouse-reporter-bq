@@ -443,7 +443,19 @@ diagnostics.push({
     resource['endTime']
     ];
     // await db.query(resource_chart_query_text, resource_chart_query_params);
+    map = new Map;
+    map.set('audit_url', resource_chart_query_params[0]);
+    map.set('template', resource_chart_query_params[1]);
+    map.set('fetch_time', resource_chart_query_params[2]);
+    map.set('resource_url', resource_chart_query_params[3]);
+    map.set('resource_type', resource_chart_query_params[4])
+    map.set('start_time', resource_chart_query_params[5]);
+    map.set('end_time', resource_chart_query_params[6]);
   }
+
+  rows = Object.fromEntries(map.entries());
+  console.log(rows);
+  bigQueryInsert(datasetId, 'resource_chart', rows);
 
   // Insert each savings opportunity into the correct table
   for (let i = 0; i < savings_opportunities.length; i++) {
