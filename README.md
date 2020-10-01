@@ -1,5 +1,7 @@
 
-# Lighthouse Reporter
+# Lighthouse Reporter BQ
+
+**This is a fork of the [Lighthouse Report project](https://github.com/LocalSEOGuide/lighthouse-reporter). It differs by using Google BigQuery in place of a PostGRE cloud SQL database.**
 
 This tool generates lighthouse reports, parses the data, and stores it in a Cloud SQL database. The data is then pulled into GDS to create reports.
 
@@ -11,12 +13,15 @@ Clone the repository. Install the dependencies as usual:
 
 Create a folder called 'input' in the root directory of the project. This folder will contain the CSV of URLs to generate reports.
 
-Also, create a file called '.env' in the root directory of the project. This needs to contain four environment variables for your database connection, like so (don't include the square brackets):
+You will need to select a method for authenticating access to BigQuery and add a `.env` file on the root, or to your `.bash_profile` for global access. If using a service account, the token file should be stored at the root of your project.
 
-    DB_HOST=[address of your CloudSQL database]
-    DB_USER=[postgres username]
-    DB_PASS=[password for database user]
-    DB_NAME=[name of the database]
+See the [Google BigQuery API reference quick start guide steps](https://googleapis.dev/nodejs/bigquery/latest/index.html#quickstart).
+
+Edit the `index.js` file to reference your BigQuery dataset ID.
+
+```javascript
+const datasetId = 'lighthouse';
+```
     
 NOTE: The Dockerfile is not needed if you aren't going to Dockerize this application.
 
