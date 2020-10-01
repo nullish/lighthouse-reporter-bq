@@ -44,9 +44,9 @@ if (should_repeat) {
 
 // Validate arguments
 if (isNaN(auto_report_interval) || isNaN(auto_report_lifetime) ||
-                auto_report_interval < 1 || auto_report_lifetime < 1) {
+  auto_report_interval < 1 || auto_report_lifetime < 1) {
   console.log('$$$Sorry, please check your input.');
-  process.exit(1);
+process.exit(1);
 }
 
 if (should_repeat) {
@@ -165,82 +165,82 @@ async function parseReportAndStore (url, template, report) {
 
   // Main thread work breakdown
   if (report['audits']['mainthread-work-breakdown']['score'] != 1 &&
-      report['audits']['mainthread-work-breakdown']['score'] != undefined) {
-        report['audits']['mainthread-work-breakdown']['details']['items'].forEach(item => {
-          current_list_of_items.push({
-            label: item['groupLabel'],
-            value: item['duration']
-          });
-        });
-  }
-  diagnostics.push({
-    diagnostic_id: 'mainthread-work-breakdown',
-    items: current_list_of_items,
-  });
-  current_list_of_items = [];
+    report['audits']['mainthread-work-breakdown']['score'] != undefined) {
+    report['audits']['mainthread-work-breakdown']['details']['items'].forEach(item => {
+      current_list_of_items.push({
+        label: item['groupLabel'],
+        value: item['duration']
+      });
+    });
+}
+diagnostics.push({
+  diagnostic_id: 'mainthread-work-breakdown',
+  items: current_list_of_items,
+});
+current_list_of_items = [];
 
   // bootup-time
   if (report['audits']['bootup-time']['score'] != 1 &&
-      report['audits']['bootup-time']['score'] != undefined) {
-        report['audits']['bootup-time']['details']['items'].forEach(item => {
-          current_list_of_items.push({
-            label: item['url'],
-            value: item['total']
-          });
-        });
-  }
-  diagnostics.push({
-    diagnostic_id: 'bootup-time',
-    items: current_list_of_items,
-  });
-  current_list_of_items = [];
+    report['audits']['bootup-time']['score'] != undefined) {
+    report['audits']['bootup-time']['details']['items'].forEach(item => {
+      current_list_of_items.push({
+        label: item['url'],
+        value: item['total']
+      });
+    });
+}
+diagnostics.push({
+  diagnostic_id: 'bootup-time',
+  items: current_list_of_items,
+});
+current_list_of_items = [];
 
   // font-display
   if (report['audits']['font-display']['score'] != 1 &&
-      report['audits']['font-display']['score'] != undefined) {
-        report['audits']['font-display']['details']['items'].forEach(item => {
-          current_list_of_items.push({
-            label: item['url'],
-            value: item['wastedMs']
-          });
-        });
-  }
-  diagnostics.push({
-    diagnostic_id: 'font-display',
-    items: current_list_of_items,
-  });
-  current_list_of_items = [];
+    report['audits']['font-display']['score'] != undefined) {
+    report['audits']['font-display']['details']['items'].forEach(item => {
+      current_list_of_items.push({
+        label: item['url'],
+        value: item['wastedMs']
+      });
+    });
+}
+diagnostics.push({
+  diagnostic_id: 'font-display',
+  items: current_list_of_items,
+});
+current_list_of_items = [];
 
   // third-party-summary
   if (report['audits']['third-party-summary']['score'] != 1 &&
-      report['audits']['third-party-summary']['score'] != undefined) {
-        report['audits']['third-party-summary']['details']['items'].forEach(item => {
-          current_list_of_items.push({
-            label: item['entity']['text'],
-            value: item['blockingTime']
-          });
-        });
-  }
-  diagnostics.push({
-    diagnostic_id: 'third-party-summary',
-    items: current_list_of_items,
-  });
-  current_list_of_items = [];
+    report['audits']['third-party-summary']['score'] != undefined) {
+    report['audits']['third-party-summary']['details']['items'].forEach(item => {
+      current_list_of_items.push({
+        label: item['entity']['text'],
+        value: item['blockingTime']
+      });
+    });
+}
+diagnostics.push({
+  diagnostic_id: 'third-party-summary',
+  items: current_list_of_items,
+});
+current_list_of_items = [];
 
   // dom-size
   if (report['audits']['dom-size']['score'] != 1 &&
-      report['audits']['dom-size']['score'] != undefined) {
-        report['audits']['dom-size']['details']['items'].forEach(item => {
-          current_list_of_items.push({
-            label: item['statistic'],
-            value: parseFloat(item['value'].replace(',', ''))
-          });
-        });
-  }
-  diagnostics.push({
-    diagnostic_id: 'dom-size',
-    items: current_list_of_items,
-  });
+    report['audits']['dom-size']['score'] != undefined) {
+    report['audits']['dom-size']['details']['items'].forEach(item => {
+      current_list_of_items.push({
+        label: item['statistic'],
+        value: parseFloat(item['value'].replace(',', ''))
+      });
+    });
+}
+diagnostics.push({
+  diagnostic_id: 'dom-size',
+  items: current_list_of_items,
+});
 
   // V6.0 Grab the budget metrics
   const performance_budget = [];
@@ -286,120 +286,120 @@ async function parseReportAndStore (url, template, report) {
 
   // Prepare the queries
   const raw_reports_query_text = `INSERT INTO raw_reports (
-                                              url,
-                                              template,
-                                              fetch_time,
-                                              report
-                                            )
-                                            VALUES (
-                                              $1, $2, $3, $4
-                                            )`;
+  url,
+  template,
+  fetch_time,
+  report
+  )
+  VALUES (
+  $1, $2, $3, $4
+  )`;
 
   const gds_audit_query_text = `INSERT INTO gds_audits (
-                                              url,
-                                              template,
-                                              fetch_time,
-                                              page_size,
-                                              first_contentful_paint,
-                                              max_potential_fid,
-                                              time_to_interactive,
-                                              first_meaningful_paint,
-                                              first_cpu_idle,
-                                              largest_contentful_paint,
-                                              cumulative_layout_shift,
-                                              total_blocking_time,
-                                              speed_index
-                                            )
-                                            VALUES (
-                                              $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13
-                                            )`;
+  url,
+  template,
+  fetch_time,
+  page_size,
+  first_contentful_paint,
+  max_potential_fid,
+  time_to_interactive,
+  first_meaningful_paint,
+  first_cpu_idle,
+  largest_contentful_paint,
+  cumulative_layout_shift,
+  total_blocking_time,
+  speed_index
+  )
+  VALUES (
+  $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13
+  )`;
 
   const resource_chart_query_text = `INSERT INTO resource_chart (
-                                                  audit_url,
-                                                  template,
-                                                  fetch_time,
-                                                  resource_url,
-                                                  resource_type,
-                                                  start_time,
-                                                  end_time
-                                                 )
-                                                 VALUES (
-                                                   $1, $2, $3, $4, $5, $6, $7
-                                                 )`;
+  audit_url,
+  template,
+  fetch_time,
+  resource_url,
+  resource_type,
+  start_time,
+  end_time
+  )
+  VALUES (
+  $1, $2, $3, $4, $5, $6, $7
+  )`;
 
   const savings_opportunities_query_text = `INSERT INTO savings_opportunities(
-                                                          audit_url,
-                                                          template,
-                                                          fetch_time,
-                                                          audit_text,
-                                                          estimated_savings
-                                                        )
-                                                        VALUES (
-                                                          $1, $2, $3, $4, $5
-                                                        )`;
+  audit_url,
+  template,
+  fetch_time,
+  audit_text,
+  estimated_savings
+  )
+  VALUES (
+  $1, $2, $3, $4, $5
+  )`;
 
   const diagnostics_query_text = `INSERT INTO diagnostics(
-                                                          audit_url,
-                                                          template,
-                                                          fetch_time,
-                                                          diagnostic_id,
-                                                          item_label,
-                                                          item_value
-                                                        )
-                                                        VALUES (
-                                                          $1, $2, $3, $4, $5, $6
-                                                        )`;
+  audit_url,
+  template,
+  fetch_time,
+  diagnostic_id,
+  item_label,
+  item_value
+  )
+  VALUES (
+  $1, $2, $3, $4, $5, $6
+  )`;
 
   const performance_budget_query_text = `INSERT INTO budgets(
-                                                          audit_url,
-                                                          template,
-                                                          fetch_time,
-                                                          budget_type,
-                                                          item_label,
-                                                          item_request_count,
-                                                          item_transfer_size,
-                                                          item_count_over_budget,
-                                                          item_size_over_budget
-                                                        )
-                                                        VALUES (
-                                                          $1, $2, $3, $4, $5, $6, $7, $8, $9
-                                                        )`;
+  audit_url,
+  template,
+  fetch_time,
+  budget_type,
+  item_label,
+  item_request_count,
+  item_transfer_size,
+  item_count_over_budget,
+  item_size_over_budget
+  )
+  VALUES (
+  $1, $2, $3, $4, $5, $6, $7, $8, $9
+  )`;
 
   const timing_budget_query_text = `INSERT INTO budgets(
-                                                          audit_url,
-                                                          template,
-                                                          fetch_time,
-                                                          budget_type,
-                                                          item_label,
-                                                          item_time,
-                                                          item_time_over_budget
-                                                        )
-                                                        VALUES (
-                                                          $1, $2, $3, $4, $5, $6, $7
-                                                        )`;
+  audit_url,
+  template,
+  fetch_time,
+  budget_type,
+  item_label,
+  item_time,
+  item_time_over_budget
+  )
+  VALUES (
+  $1, $2, $3, $4, $5, $6, $7
+  )`;
 
   // Prepare the params for the queries
   let raw_reports_query_params = [
-    url,
-    template,
-    fetch_time,
-    report
+  url,
+  template,
+  fetch_time,
+  report
   ];
 
   let gds_audit_query_params = [
-    url,
-    template,
-    fetch_time,
-    page_size,
-    first_contentful_paint,
-    max_potential_fid,
-    time_to_interactive,
-    first_meaningful_paint,
-    first_cpu_idle,
-    largest_contentful_paint,
-    cumulative_layout_shift,
-    total_blocking_time,
-    speed_index
+  url,
+  template,
+  fetch_time,
+  page_size,
+  first_contentful_paint,
+  max_potential_fid,
+  time_to_interactive,
+  first_meaningful_paint,
+  first_cpu_idle,
+  largest_contentful_paint,
+  cumulative_layout_shift,
+  total_blocking_time,
+  speed_index
   ];
 
   // Execute the queries
@@ -434,13 +434,13 @@ async function parseReportAndStore (url, template, report) {
     }
 
     const resource_chart_query_params = [
-      url,
-      template,
-      fetch_time,
-      resource['url'],
-      resource_type,
-      resource['startTime'],
-      resource['endTime']
+    url,
+    template,
+    fetch_time,
+    resource['url'],
+    resource_type,
+    resource['startTime'],
+    resource['endTime']
     ];
     // await db.query(resource_chart_query_text, resource_chart_query_params);
   }
@@ -450,26 +450,26 @@ async function parseReportAndStore (url, template, report) {
     const opportunity = savings_opportunities[i];
 
     const savings_opportunities_query_params = [
-      url,
-      template,
-      fetch_time,
-      opportunity['audit_text'],
-      opportunity['estimated_savings']
+    url,
+    template,
+    fetch_time,
+    opportunity['audit_text'],
+    opportunity['estimated_savings']
     ];
     /*
     console.log(`Rows: ${savings_opportunities_query_params.length}
       ${savings_opportunities_query_params}
       `);
-*/
-    map = new Map;
-    map.set('audit_url', savings_opportunities_query_params[0]);
-    map.set('template', savings_opportunities_query_params[1]);
-    map.set('fetch_time', savings_opportunities_query_params[2]);
-    map.set('audit_text', savings_opportunities_query_params[3]);
-    map.set('estimated_savings', savings_opportunities_query_params[4]);
-    let rows = Object.fromEntries(map.entries());
-    console.log(rows);
-    bigQueryInsert(datasetId, 'savings_opportunities', rows); 
+      */
+      map = new Map;
+      map.set('audit_url', savings_opportunities_query_params[0]);
+      map.set('template', savings_opportunities_query_params[1]);
+      map.set('fetch_time', savings_opportunities_query_params[2]);
+      map.set('audit_text', savings_opportunities_query_params[3]);
+      map.set('estimated_savings', savings_opportunities_query_params[4]);
+      let rows = Object.fromEntries(map.entries());
+      console.log(rows);
+      bigQueryInsert(datasetId, 'savings_opportunities', rows); 
 
     // await db.query(savings_opportunities_query_text, savings_opportunities_query_params);
   }
@@ -479,15 +479,15 @@ async function parseReportAndStore (url, template, report) {
     const item = performance_budget[i];
 
     const performance_budget_query_params = [
-      url,
-      template,
-      fetch_time,
-      'performance',
-      item.item_label,
-      item.item_request_count,
-      item.item_transfer_size,
-      item.item_count_over_budget,
-      item.item_size_over_budget
+    url,
+    template,
+    fetch_time,
+    'performance',
+    item.item_label,
+    item.item_request_count,
+    item.item_transfer_size,
+    item.item_count_over_budget,
+    item.item_size_over_budget
     ];
 
     // await db.query(performance_budget_query_text, performance_budget_query_params);
@@ -498,13 +498,13 @@ async function parseReportAndStore (url, template, report) {
     const item = timing_budget[i];
 
     const timing_budget_query_params = [
-      url,
-      template,
-      fetch_time,
-      'timing',
-      item.item_label,
-      item.item_measurement,
-      item.item_over_budget,
+    url,
+    template,
+    fetch_time,
+    'timing',
+    item.item_label,
+    item.item_measurement,
+    item.item_over_budget,
     ];
 
     // await db.query(timing_budget_query_text, timing_budget_query_params);
@@ -518,16 +518,25 @@ async function parseReportAndStore (url, template, report) {
       const item = diag['items'][j];
 
       const diagnostics_query_params = [
-        url,
-        template,
-        fetch_time,
-        diag['diagnostic_id'],
-        item['label'],
-        item['value']
+      url,
+      template,
+      fetch_time,
+      diag['diagnostic_id'],
+      item['label'],
+      item['value']
       ];
       map = new Map;
-      
+      map.set('audit_url', diagnostics_query_params[0]);
+      map.set('template', diagnostics_query_params[1]);
+      map.set('fetch_time', diagnostics_query_params[2]);
+      map.set('diagnostic_id', diagnostics_query_params[3]);
+      map.set('item_label', diagnostics_query_params[4]);
+      map.set('item_value', diagnostics_query_params[5]);
       // await db.query(diagnostics_query_text, diagnostics_query_params);
+
+      let rows = Object.fromEntries(map.entries());
+      console.log(rows);
+      bigQueryInsert(datasetId, 'diagnostics', rows); 
     }
   }
 }
@@ -541,13 +550,13 @@ async function processFile (file_path, budgets) {
 
     // Validate that input CSV has URL and Template columns
     if (!csv_data[0].hasOwnProperty('URL') ||
-        !csv_data[0].hasOwnProperty('Template')) {
+      !csv_data[0].hasOwnProperty('Template')) {
       console.log('$$$Sorry, please make sure your CSV contains two columns labeled \'URL\' and \'Template\'.');
-      db.disconnect();
-      process.exit(-1);
-    }else{
-      console.log('All good!');
-    }
+    db.disconnect();
+    process.exit(-1);
+  }else{
+    console.log('All good!');
+  }
 
     // Do reporting on the file
     await doReporting(csv_data, budgets);
