@@ -284,100 +284,7 @@ diagnostics.push({
   // Perform some conversions
   page_size = page_size / 1024; // <-- Convert KB to MB
 
-  // Prepare the queries
-  const raw_reports_query_text = `INSERT INTO raw_reports (
-  url,
-  template,
-  fetch_time,
-  report
-  )
-  VALUES (
-  $1, $2, $3, $4
-  )`;
-
-  const gds_audit_query_text = `INSERT INTO gds_audits (
-  url,
-  template,
-  fetch_time,
-  page_size,
-  first_contentful_paint,
-  max_potential_fid,
-  time_to_interactive,
-  first_meaningful_paint,
-  first_cpu_idle,
-  largest_contentful_paint,
-  cumulative_layout_shift,
-  total_blocking_time,
-  speed_index
-  )
-  VALUES (
-  $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13
-  )`;
-
-  const resource_chart_query_text = `INSERT INTO resource_chart (
-  audit_url,
-  template,
-  fetch_time,
-  resource_url,
-  resource_type,
-  start_time,
-  end_time
-  )
-  VALUES (
-  $1, $2, $3, $4, $5, $6, $7
-  )`;
-
-  const savings_opportunities_query_text = `INSERT INTO savings_opportunities(
-  audit_url,
-  template,
-  fetch_time,
-  audit_text,
-  estimated_savings
-  )
-  VALUES (
-  $1, $2, $3, $4, $5
-  )`;
-
-  const diagnostics_query_text = `INSERT INTO diagnostics(
-  audit_url,
-  template,
-  fetch_time,
-  diagnostic_id,
-  item_label,
-  item_value
-  )
-  VALUES (
-  $1, $2, $3, $4, $5, $6
-  )`;
-
-  const performance_budget_query_text = `INSERT INTO budgets(
-  audit_url,
-  template,
-  fetch_time,
-  budget_type,
-  item_label,
-  item_request_count,
-  item_transfer_size,
-  item_count_over_budget,
-  item_size_over_budget
-  )
-  VALUES (
-  $1, $2, $3, $4, $5, $6, $7, $8, $9
-  )`;
-
-  const timing_budget_query_text = `INSERT INTO budgets(
-  audit_url,
-  template,
-  fetch_time,
-  budget_type,
-  item_label,
-  item_time,
-  item_time_over_budget
-  )
-  VALUES (
-  $1, $2, $3, $4, $5, $6, $7
-  )`;
-
+  
   // Prepare the params for the queries
   let raw_reports_query_params = [
   url,
@@ -403,7 +310,6 @@ diagnostics.push({
   ];
 
   // Execute the queries
-  // await db.query(gds_audit_query_text, gds_audit_query_params);
   let map = new Map;
   map.set('url', gds_audit_query_params[0]);
   map.set('template', gds_audit_query_params[1]);
@@ -419,7 +325,7 @@ diagnostics.push({
   map.set('total_blocking_time', gds_audit_query_params[11]);
   map.set('speed_index', gds_audit_query_params[12]);
   
-  let rows = Object.fromEntries(map.entries());
+  let rows = Object.fromEntries(map.entries()); 
   console.log(rows);
   bigQueryInsert(datasetId, 'gds_audits', rows);   
 
@@ -442,8 +348,8 @@ diagnostics.push({
     resource['startTime'],
     resource['endTime']
     ];
-    // await db.query(resource_chart_query_text, resource_chart_query_params);
-    map = new Map;
+
+    let map = new Map;
     map.set('audit_url', resource_chart_query_params[0]);
     map.set('template', resource_chart_query_params[1]);
     map.set('fetch_time', resource_chart_query_params[2]);
@@ -451,11 +357,12 @@ diagnostics.push({
     map.set('resource_type', resource_chart_query_params[4])
     map.set('start_time', resource_chart_query_params[5]);
     map.set('end_time', resource_chart_query_params[6]);
-  }
 
-  rows = Object.fromEntries(map.entries());
+    let rows = Object.fromEntries(map.entries());
   console.log(rows);
   bigQueryInsert(datasetId, 'resource_chart', rows);
+  }
+
 
   // Insert each savings opportunity into the correct table
   for (let i = 0; i < savings_opportunities.length; i++) {
@@ -468,12 +375,7 @@ diagnostics.push({
     opportunity['audit_text'],
     opportunity['estimated_savings']
     ];
-    /*
-    console.log(`Rows: ${savings_opportunities_query_params.length}
-      ${savings_opportunities_query_params}
-      `);
-      */
-      map = new Map;
+      let map = new Map;
       map.set('audit_url', savings_opportunities_query_params[0]);
       map.set('template', savings_opportunities_query_params[1]);
       map.set('fetch_time', savings_opportunities_query_params[2]);
@@ -502,8 +404,7 @@ diagnostics.push({
     item.item_size_over_budget
     ];
 
-    // await db.query(performance_budget_query_text, performance_budget_query_params);
-    map = new Map;
+    let map = new Map;
     map.set('audit_url', performance_budget_query_params[0]);
     map.set('template', performance_budget_query_params[1]);
     map.set('fetch_time', performance_budget_query_params[2]);
@@ -514,7 +415,7 @@ diagnostics.push({
     map.set('item_count_over_budget', performance_budget_query_params[7]);
     map.set('item_size_over_budget', performance_budget_query_params[8]);
 
-    rows = Object.fromEntries(map.entries());
+    let rows = Object.fromEntries(map.entries());
     console.log(rows);
     bigQueryInsert(datasetId, 'budgets', rows);
   }
@@ -533,9 +434,7 @@ diagnostics.push({
     item.item_over_budget,
     ];
 
-    // await db.query(timing_budget_query_text, timing_budget_query_params);
-
-    map = new Map;
+    let map = new Map;
     map.set('audit_url', timing_budget_query_params[0]);
     map.set('template', timing_budget_query_params[1]);
     map.set('fetch_time', timing_budget_query_params[2]);
@@ -544,7 +443,7 @@ diagnostics.push({
     map.set('item_measurement', timing_budget_query_params[5]);
     map.set('item_over_budget', timing_budget_query_params[6]);
 
-    rows = Object.fromEntries(map.entries());
+    let rows = Object.fromEntries(map.entries());
     console.log(rows);
     bigQueryInsert(datasetId, 'budgets', rows);
   }
@@ -564,14 +463,14 @@ diagnostics.push({
       item['label'],
       item['value']
       ];
-      map = new Map;
+      
+      let map = new Map;
       map.set('audit_url', diagnostics_query_params[0]);
       map.set('template', diagnostics_query_params[1]);
       map.set('fetch_time', diagnostics_query_params[2]);
       map.set('diagnostic_id', diagnostics_query_params[3]);
       map.set('item_label', diagnostics_query_params[4]);
       map.set('item_value', diagnostics_query_params[5]);
-      // await db.query(diagnostics_query_text, diagnostics_query_params);
 
       let rows = Object.fromEntries(map.entries());
       console.log(rows);
