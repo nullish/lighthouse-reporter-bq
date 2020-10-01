@@ -403,8 +403,25 @@ async function parseReportAndStore (url, template, report) {
   ];
 
   // Execute the queries
-  // await db.query(raw_reports_query_text, raw_reports_query_params);
   // await db.query(gds_audit_query_text, gds_audit_query_params);
+  let map = new Map;
+  map.set('url', gds_audit_query_params[0]);
+  map.set('template', gds_audit_query_params[1]);
+  map.set('fetch_time', gds_audit_query_params[2]);
+  map.set('page_size', gds_audit_query_params[3]);
+  map.set('first_contentful_paint', gds_audit_query_params[4]);
+  map.set('max_potential_fid', gds_audit_query_params[5]);
+  map.set('time_to_interactive', gds_audit_query_params[6]);
+  map.set('first_meaningful_paint', gds_audit_query_params[7]);
+  map.set('first_cpu_idle', gds_audit_query_params[8]);
+  map.set('largest_contentful_paint', gds_audit_query_params[9]);
+  map.set('cumulative_layout_shift', gds_audit_query_params[10]);
+  map.set('total_blocking_time', gds_audit_query_params[11]);
+  map.set('speed_index', gds_audit_query_params[12]);
+  
+  let rows = Object.fromEntries(map.entries());
+  console.log(rows);
+  bigQueryInsert(datasetId, 'gds_audits', rows);   
 
   // Insert all resources from the resource table into the resource chart table
   for (let i = 0; i < network_resources.length; i++) {
@@ -444,7 +461,7 @@ async function parseReportAndStore (url, template, report) {
       ${savings_opportunities_query_params}
       `);
 */
-    let map = new Map;
+    map = new Map;
     map.set('audit_url', savings_opportunities_query_params[0]);
     map.set('template', savings_opportunities_query_params[1]);
     map.set('fetch_time', savings_opportunities_query_params[2]);
@@ -452,7 +469,7 @@ async function parseReportAndStore (url, template, report) {
     map.set('estimated_savings', savings_opportunities_query_params[4]);
     let rows = Object.fromEntries(map.entries());
     console.log(rows);
-    bigQueryInsert(datasetId, 'tbTmpLH', rows); 
+    bigQueryInsert(datasetId, 'savings_opportunities', rows); 
 
     // await db.query(savings_opportunities_query_text, savings_opportunities_query_params);
   }
@@ -508,7 +525,8 @@ async function parseReportAndStore (url, template, report) {
         item['label'],
         item['value']
       ];
-
+      map = new Map;
+      
       // await db.query(diagnostics_query_text, diagnostics_query_params);
     }
   }
