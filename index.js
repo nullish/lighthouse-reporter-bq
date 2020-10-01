@@ -503,6 +503,20 @@ diagnostics.push({
     ];
 
     // await db.query(performance_budget_query_text, performance_budget_query_params);
+    map = new Map;
+    map.set('audit_url', performance_budget_query_params[0]);
+    map.set('template', performance_budget_query_params[1]);
+    map.set('fetch_time', performance_budget_query_params[2]);
+    map.set('budget_type', performance_budget_query_params[3]);
+    map.set('item_label', performance_budget_query_params[4]);
+    map.set('item_request_count', performance_budget_query_params[5]);
+    map.set('item_transfer_size', performance_budget_query_params[6]);
+    map.set('item_count_over_budget', performance_budget_query_params[7]);
+    map.set('item_size_over_budget', performance_budget_query_params[8]);
+
+    rows = Object.fromEntries(map.entries());
+    console.log(rows);
+    bigQueryInsert(datasetId, 'budgets', rows);
   }
 
   // Insert each budget row (if any)
@@ -520,6 +534,19 @@ diagnostics.push({
     ];
 
     // await db.query(timing_budget_query_text, timing_budget_query_params);
+
+    map = new Map;
+    map.set('audit_url', timing_budget_query_params[0]);
+    map.set('template', timing_budget_query_params[1]);
+    map.set('fetch_time', timing_budget_query_params[2]);
+    map.set('budget_type', timing_budget_query_params[3]);
+    map.set('item_label', timing_budget_query_params[4]);
+    map.set('item_measurement', timing_budget_query_params[5]);
+    map.set('item_over_budget', timing_budget_query_params[6]);
+
+    rows = Object.fromEntries(map.entries());
+    console.log(rows);
+    bigQueryInsert(datasetId, 'budgets', rows);
   }
 
   // Insert each diagnostic audit into the correct table
