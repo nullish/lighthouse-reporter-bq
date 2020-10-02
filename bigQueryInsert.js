@@ -12,7 +12,7 @@ const insertRowsAsStream = async(datasetId = "lighthouse", tableId = "tbTmpLH", 
   .dataset(datasetId)
   .table(tableId)
   .insert(rows);
-  console.log(`BigQuery record inserted to: dataset ${datasetId}, table: ${tableId}`);
+  console.log(`BigQuery record inserted to: \ndataset ${datasetId}, table: \n${tableId}\nRecords:${rows}`);
 } catch(e) {
     // statements
     console.log(e.errors);
