@@ -312,17 +312,6 @@ diagnostics.push({
   // Execute the queries
 
   let map = new Map;
-
-  map.set('url', raw_reports_query_params[0]);
-  map.set('template', raw_reports_query_params[1]);
-  map.set('fetch_time', raw_reports_query_params[2]);
-  let jsonString = JSON.stringify(raw_reports_query_params[3]);
-  map.set('report', jsonString);
-  let rows = Object.fromEntries(map.entries()); 
-  console.log(rows);
-  bigQueryInsert(datasetId, 'raw_reports', rows);
-
-  map = new Map;
   map.set('url', gds_audit_query_params[0]);
   map.set('template', gds_audit_query_params[1]);
   map.set('fetch_time', gds_audit_query_params[2]);
