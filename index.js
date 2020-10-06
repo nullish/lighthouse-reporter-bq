@@ -163,6 +163,12 @@ async function parseReportAndStore (url, template, report) {
   //  third-party-summary
   //  dom-size
 
+  /* Additional daignostic metrics not captured in original repo.
+
+  Serve static assets with an efficient cache policy
+
+  */
+
   // Main thread work breakdown
   if (report['audits']['mainthread-work-breakdown']['score'] != 1 &&
     report['audits']['mainthread-work-breakdown']['score'] != undefined) {
@@ -239,6 +245,22 @@ current_list_of_items = [];
 }
 diagnostics.push({
   diagnostic_id: 'dom-size',
+  items: current_list_of_items,
+});
+
+// Cache static assets
+
+if (report['audits']['uses-long-cache-ttl']['score'] != 1 &&
+    report['audits']['uses-long-cache-ttl']['score'] != undefined) {
+    report['audits']['uses-long-cache-ttl']['details']['items'].forEach(item => {
+      current_list_of_items.push({
+        label: item['url'],
+        value: item['wastedBytes']
+      });
+    });
+}
+diagnostics.push({
+  diagnostic_id: 'uses-long-cache-ttl',
   items: current_list_of_items,
 });
 
