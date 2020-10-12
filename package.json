@@ -11,12 +11,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@google-cloud/bigquery": "^5.2.0",
+    "@google-cloud/bigquery": "^5.3.0",
     "@octokit/core": "^3.1.2",
     "colors": "^1.4.0",
     "dotenv": "~8.2.0",
-    "lighthouse": "^6.3.0",
+    "lighthouse": "^6.4.1",
     "neat-csv": "~5.1.0",
-    "pg": "^8.2.1"
+    "pg": "^8.4.1"
   }
 }
