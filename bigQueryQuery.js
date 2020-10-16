@@ -51,7 +51,8 @@ const bigQueryQuery = async(sqlExp) => {
   query();
 } catch(e) {
     // statements
-    console.log(e);
+    console.log(e.errors);
   }
-}
-bigQueryQuery(`SELECT reportFROM \`speed-test-286619.lighthouse.raw_reports\` WHERE fetch_time = '2020-10-16 15:47:54.122 UTC'`);
+};
+
+module.exports = bigQueryQuery;
