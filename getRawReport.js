@@ -16,15 +16,9 @@
 
 'use strict';
 
-<<<<<<<< HEAD:getRawReport.js
 function main(...args) {
   const fetch_time = args[0]; 
    // [START bigquery_query]
-========
-const bigQueryQuery = async(sqlExp) => {
-  try {
-  // [START bigquery_query]
->>>>>>>> 75836e0099fa022274efe340a6c6851e00ac1b71:bigQueryQuery.js
   // [START bigquery_client_default_credentials]
   // Import the Google Cloud client library using default credentials
   const {BigQuery} = require('@google-cloud/bigquery');
@@ -32,14 +26,9 @@ const bigQueryQuery = async(sqlExp) => {
   // [END bigquery_client_default_credentials]
   async function query() {
     // Query definition with user supplied report date passed in.
-
-<<<<<<<< HEAD:getRawReport.js
     const query = `SELECT report
 FROM \`speed-test-286619.lighthouse.raw_reports\`
 WHERE EXTRACT(DATE FROM fetch_time) = '${fetch_time}'`;
-========
-    const query = sqlExp;
->>>>>>>> 75836e0099fa022274efe340a6c6851e00ac1b71:bigQueryQuery.js
 
     // For all options, see https://cloud.google.com/bigquery/docs/reference/rest/v2/jobs/query
     const options = {
@@ -65,15 +54,5 @@ WHERE EXTRACT(DATE FROM fetch_time) = '${fetch_time}'`;
   }
   // [END bigquery_query]
   query();
-<<<<<<<< HEAD:getRawReport.js
 }
 main(...process.argv.slice(2)); // mandatory arg is date in format YYYY-MM-DD
-========
-} catch(e) {
-    // statements
-    console.log(e.errors);
-  }
-};
-
-module.exports = bigQueryQuery;
->>>>>>>> 75836e0099fa022274efe340a6c6851e00ac1b71:bigQueryQuery.js
