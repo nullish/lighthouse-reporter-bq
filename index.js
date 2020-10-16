@@ -13,7 +13,7 @@ const path = require('path');
 const neat_csv = require('neat-csv');
 
 // globals
-const datasetId = 'test_lighthouse'; // Dataset for BigQuery to use.
+const datasetId = 'lighthouse'; // Dataset for BigQuery to use.
 
 // Is this a recurring report or no?
 let should_repeat = false;

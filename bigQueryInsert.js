@@ -17,7 +17,7 @@ const insertRowsAsStream = async(datasetId = "lighthouse", tableId = "tbTmpLH", 
   console.log(conslog);
 } catch(e) {
     // statements
-    console.log(JSON.stringify(e.errors));
+    console.log(e.errors);
   }
 }
 
