@@ -16,19 +16,20 @@
 
 'use strict';
 
-function main() {
-  // [START bigquery_query]
+function main(...args) {
+  const fetch_time = args[0]; 
+   // [START bigquery_query]
   // [START bigquery_client_default_credentials]
   // Import the Google Cloud client library using default credentials
   const {BigQuery} = require('@google-cloud/bigquery');
   const bigquery = new BigQuery();
   // [END bigquery_client_default_credentials]
   async function query() {
-    // Queries the U.S. given names dataset for the state of Texas.
+    // Query definition with user supplied report date passed in.
 
     const query = `SELECT report
 FROM \`speed-test-286619.lighthouse.raw_reports\`
-WHERE fetch_time = '2020-10-16 15:47:54.122 UTC'`;
+WHERE EXTRACT(DATE FROM fetch_time) = '${fetch_time}'`;
 
     // For all options, see https://cloud.google.com/bigquery/docs/reference/rest/v2/jobs/query
     const options = {
@@ -46,9 +47,13 @@ WHERE fetch_time = '2020-10-16 15:47:54.122 UTC'`;
 
     // Print the results
     console.log('Rows:');
+
+    /* TODO **************
+    Write files locally as clean JSON, for adding as gists and viewing in Lighthouse.
+    ******************* */
     rows.forEach(row => console.log(row));
   }
   // [END bigquery_query]
   query();
 }
-main(...process.argv.slice(2));
+main(...process.argv.slice(2)); // mandatory arg is date in format YYYY-MM-DD
