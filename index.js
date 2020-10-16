@@ -13,7 +13,7 @@ const path = require('path');
 const neat_csv = require('neat-csv');
 
 // globals
-const datasetId = 'lighthouse'; // Dataset for BigQuery to use.
+const datasetId = 'test_lighthouse'; // Dataset for BigQuery to use.
 
 // Is this a recurring report or no?
 let should_repeat = false;
@@ -333,7 +333,22 @@ diagnostics.push({
 
   // Execute the queries
 
+  // Raw report
+  
   let map = new Map;
+  map.set('url', raw_reports_query_params[0]);
+  map.set('template', raw_reports_query_params[1]);
+  map.set('fetch_time', raw_reports_query_params[2]);
+  map.set('report', JSON.stringify(raw_reports_query_params[3]));
+
+  
+  rows = Object.fromEntries(map.entries()); 
+  console.log(rows);
+  bigQueryInsert(datasetId, 'raw_reports', rows);   
+
+  // GDS audit
+
+  map = new Map;
   map.set('url', gds_audit_query_params[0]);
   map.set('template', gds_audit_query_params[1]);
   map.set('fetch_time', gds_audit_query_params[2]);
