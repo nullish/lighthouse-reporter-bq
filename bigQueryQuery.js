@@ -16,7 +16,8 @@
 
 'use strict';
 
-function main() {
+const bigQueryQuery = async(sqlExp) => {
+  try {
   // [START bigquery_query]
   // [START bigquery_client_default_credentials]
   // Import the Google Cloud client library using default credentials
@@ -26,9 +27,7 @@ function main() {
   async function query() {
     // Queries the U.S. given names dataset for the state of Texas.
 
-    const query = `SELECT report
-FROM \`speed-test-286619.lighthouse.raw_reports\`
-WHERE fetch_time = '2020-10-16 15:47:54.122 UTC'`;
+    const query = sqlExp;
 
     // For all options, see https://cloud.google.com/bigquery/docs/reference/rest/v2/jobs/query
     const options = {
@@ -50,5 +49,9 @@ WHERE fetch_time = '2020-10-16 15:47:54.122 UTC'`;
   }
   // [END bigquery_query]
   query();
+} catch(e) {
+    // statements
+    console.log(e);
+  }
 }
-main(...process.argv.slice(2));
+bigQueryQuery(`SELECT reportFROM \`speed-test-286619.lighthouse.raw_reports\` WHERE fetch_time = '2020-10-16 15:47:54.122 UTC'`);
