@@ -50,7 +50,11 @@ WHERE EXTRACT(DATE FROM fetch_time) = '${fetch_time}'`;
     /* TODO **************
     Write files locally as clean JSON, for adding as gists and viewing in Lighthouse.
     ******************* */
-    rows.forEach(row => console.log(row));
+    rows.forEach(row => {
+      // console.log(row.report);
+      let repJson = JSON.parse(row.report);
+      console.log(`${fetch_time}_${encodeURIComponent(repJson.requestedUrl)}`);
+    });
   }
   // [END bigquery_query]
   query();
