@@ -17,6 +17,7 @@
 'use strict';
 
 function main(...args) {
+  const fs = require('fs');
   const fetch_time = args[0]; 
    // [START bigquery_query]
   // [START bigquery_client_default_credentials]
@@ -53,7 +54,14 @@ WHERE EXTRACT(DATE FROM fetch_time) = '${fetch_time}'`;
     rows.forEach(row => {
       // console.log(row.report);
       let repJson = JSON.parse(row.report);
-      console.log(`${fetch_time}_${encodeURIComponent(repJson.requestedUrl)}`);
+      let repName = `${fetch_time}_${encodeURIComponent(repJson.requestedUrl)}`;
+      console.log(repName);
+      try {
+        fs.writeFileSync(`./gist/${repName}.json`, row.report);
+      } catch(e) {
+        // statements
+        console.log(e);
+      }
     });
   }
   // [END bigquery_query]
