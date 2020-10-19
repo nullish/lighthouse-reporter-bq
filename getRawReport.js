@@ -23,7 +23,9 @@
 
 /*
 Pulls raw reports from Big Query to local file system for a specified date/time.
+Default save location: ./gist
 */
+
 'use strict';
 
 function main(...args) {
