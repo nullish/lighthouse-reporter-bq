@@ -3,7 +3,7 @@
  * 
  * @desc Use this sscript to download complete Lighthouse reports from your BigQuery table to local file system.
  *
-*/
+ */
 
 // Copyright 2019 Google LLC
 //
@@ -27,9 +27,26 @@ Pulls raw reports from Big Query to local file system for a specified date/time.
 'use strict';
 
 function main(...args) {
+  const yargs = require('yargs');
   const fs = require('fs');
+
+  const argv = yargs
+  .option('time', {
+    alias: 't',
+    demand: 'Supply an ISO format date/time, e.g. 2020-10-16 15:47:54.122 UTC',
+    describe: 'ISO format date-time corresponding to Lighthouse fetch_time',
+    type: 'string'
+  })
+  .option('object', {
+    alias: 'o',
+    demand: 'Supply the location of the table holding raw reports: your project_id.your_dataset_id',
+    describe: 'Identifier for BigQuery project and dataset',
+    type: 'string'
+  })
+  .argv;
   // Get ISO format date/time of reports to pull from command line argument.
-  const fetch_time = args[0]; 
+  const fetch_time = argv.time;
+  const bqo = argv.object;
    // [START bigquery_query]
   // [START bigquery_client_default_credentials]
   // Import the Google Cloud client library using default credentials
@@ -39,8 +56,8 @@ function main(...args) {
   async function query() {
     // Query definition with user supplied report date passed in.
     const query = `SELECT report
-FROM \`speed-test-286619.lighthouse.raw_reports\`
-WHERE EXTRACT(DATE FROM fetch_time) = '${fetch_time}'`;
+    FROM \`${bqo}.raw_reports\`
+    WHERE EXTRACT(DATE FROM fetch_time) = '${fetch_time}'`;
 
     // For all options, see https://cloud.google.com/bigquery/docs/reference/rest/v2/jobs/query
     const options = {
@@ -61,7 +78,7 @@ WHERE EXTRACT(DATE FROM fetch_time) = '${fetch_time}'`;
 
    // Write each report to gist folder and log details to screen.
    // File name is combination of date-time and url.
-    rows.forEach(row => {
+   rows.forEach(row => {
       // console.log(row.report);
       let repJson = JSON.parse(row.report);
       let repName = `${fetch_time}_${encodeURIComponent(repJson.requestedUrl)}`;
@@ -73,7 +90,7 @@ WHERE EXTRACT(DATE FROM fetch_time) = '${fetch_time}'`;
         console.log(e);
       }
     });
-  }
+ }
   // [END bigquery_query]
   query();
 }
