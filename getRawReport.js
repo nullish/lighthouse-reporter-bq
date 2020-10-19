@@ -1,3 +1,10 @@
+/**
+ * @name getRawReport
+ * 
+ * @desc Use this sscript to download complete Lighthouse reports from your BigQuery table to local file system.
+ *
+*/
+
 // Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
