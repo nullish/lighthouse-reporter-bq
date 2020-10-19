@@ -14,10 +14,14 @@
 
 // REPO: https://raw.githubusercontent.com/googleapis/nodejs-bigquery/master/samples/query.js
 
+/*
+Pulls raw reports from Big Query to local file system for a specified date/time.
+*/
 'use strict';
 
 function main(...args) {
   const fs = require('fs');
+  // Get ISO format date/time of reports to pull from command line argument.
   const fetch_time = args[0]; 
    // [START bigquery_query]
   // [START bigquery_client_default_credentials]
@@ -48,9 +52,8 @@ WHERE EXTRACT(DATE FROM fetch_time) = '${fetch_time}'`;
     // Print the results
     console.log('Rows:');
 
-    /* TODO **************
-    Write files locally as clean JSON, for adding as gists and viewing in Lighthouse.
-    ******************* */
+   // Write each report to gist folder and log details to screen.
+   // File name is combination of date-time and url.
     rows.forEach(row => {
       // console.log(row.report);
       let repJson = JSON.parse(row.report);
