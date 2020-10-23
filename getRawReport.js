@@ -35,8 +35,8 @@ function main(...args) {
   const argv = yargs
   .option('time', {
     alias: 't',
-    demand: 'Supply an ISO format date/time, e.g. 2020-10-16 15:47:54.122 UTC',
-    describe: 'ISO format date-time corresponding to Lighthouse fetch_time',
+    demand: 'Supply a date in the format YYYY-MM-DD',
+    describe: 'Date corresponding to Lighthouse fetch_time',
     type: 'string'
   })
   .option('object', {
